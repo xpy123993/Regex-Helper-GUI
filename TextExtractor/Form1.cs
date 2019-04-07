@@ -29,36 +29,42 @@ namespace TextExtractor
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var regex = new Regex(textBox2.Text);
-            var results = Regex.Matches(textBox1.Text, textBox2.Text);
-
-            listView1.Columns.Clear();
-            listView1.Items.Clear();
-            data.Clear();
-            foreach (string name in regex.GetGroupNames())
-                listView1.Columns.Add(name);
-            listView1.Columns.RemoveAt(0);
-
-            header = new List<string>(regex.GetGroupNames());
-            header.RemoveAt(0);
-
-            toolStripStatusLabel1.Text = string.Format("{0} records found\r\n", results.Count);
-
-            for(int i = 0; i < results.Count; i ++)
+            try
             {
-                Match match = results[i];
-                var item_val = new List<string>();
-                foreach (Group group in match.Groups)
-                    item_val.Add(group.Value);
-                item_val.RemoveAt(0);
+                var regex = new Regex(textBox2.Text);
+                var results = Regex.Matches(textBox1.Text, textBox2.Text);
 
-                ListViewItem item = new ListViewItem(item_val.ToArray());
-                listView1.Items.Add(item);
+                listView1.Columns.Clear();
+                listView1.Items.Clear();
+                data.Clear();
+                foreach (string name in regex.GetGroupNames())
+                    listView1.Columns.Add(name);
+                listView1.Columns.RemoveAt(0);
 
-                data.Add(item_val);
+                header = new List<string>(regex.GetGroupNames());
+                header.RemoveAt(0);
 
+                toolStripStatusLabel1.Text = string.Format("{0} records found\r\n", results.Count);
+
+                for (int i = 0; i < results.Count; i++)
+                {
+                    Match match = results[i];
+                    var item_val = new List<string>();
+                    foreach (Group group in match.Groups)
+                        item_val.Add(group.Value);
+                    item_val.RemoveAt(0);
+
+                    ListViewItem item = new ListViewItem(item_val.ToArray());
+                    listView1.Items.Add(item);
+
+                    data.Add(item_val);
+
+                }
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            } catch (Exception ex)
+            {
+                toolStripStatusLabel1.Text = ex.Message;
             }
-            listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
 
         private void button2_Click(object sender, EventArgs e)
